@@ -1,15 +1,21 @@
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
 int main() {
-  // Flush after every std::cout / std:cerr
-  std::cout << std::unitbuf;
-  std::cerr << std::unitbuf;
- 
-  std::cout << "$ ";
+        bool running{true};
 
-  std::string input;
-  std::getline(std::cin, input);
+        while (running) {
+                // Flush after every std::cout / std:cerr
+                std::cout << std::unitbuf;
+                std::cerr << std::unitbuf;
 
-  std::cout << input << ": command not found" << std::endl;
+                std::cout << "$ ";
+
+                std::string input;
+                std::getline(std::cin, input);
+                std::cout << input << ": command not found" << std::endl;
+        }
+
+        return EXIT_SUCCESS;
 }

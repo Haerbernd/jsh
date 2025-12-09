@@ -9,4 +9,4 @@
 # Exit early if any commands fail
 set -e
 
-exec ./build/shell "$@"
+exec ./build/bin/jsh "$@"

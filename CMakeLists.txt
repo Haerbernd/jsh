@@ -1,11 +1,10 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.31)
 
-project(shell-starter-cpp)
+project(jsh
+        LANGUAGES CXX
+        DESCRIPTION "jsh - JanShell my own shell"
+)
 
-file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.hpp)
+set(CMAKE_CXX_STANDARD 20) # Enable the C++23 standard
 
-set(CMAKE_CXX_STANDARD 23) # Enable the C++23 standard
-
-add_executable(shell ${SOURCE_FILES})
-
-target_link_libraries(shell PRIVATE readline)
+add_subdirectory(src bin)
