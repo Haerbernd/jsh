@@ -35,6 +35,10 @@ int main() {
                                 echoVec.push_back(inputVec[i]);
                         }
                         jsh::echo(echoVec);
+                } else if (inputVec[0] == "type") {
+                        if (inputVec.size() > 1) {
+                                jsh::type(inputVec[1]);
+                        }
                 } else {
                         std::cout << input << ": command not found" << std::endl;
                 }
