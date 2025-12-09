@@ -1,15 +1,9 @@
 #include "builtins.h"
+#include "os.h"
 #include <algorithm>
-#include <iostream>
+#include <filesystem>
 
 namespace jsh {
-        void print(std::string msg, const bool newline) {
-                if (newline) {
-                        msg += "\n";
-                }
-                std::cout << msg;
-        }
-
         void echo(const std::vector<std::string> args) {
                 std::string msg{};
 
@@ -24,6 +18,23 @@ namespace jsh {
                 if (std::find(BUILTINS.begin(), BUILTINS.end(), command) != BUILTINS.end()) {
                         print(command + " is a shell builtin", true);
                 } else {
+                        std::vector<std::string> PATHDirs{getPATHDirs()};
+                       
+                        
+
+                        std::filesystem::path currentPath{};
+                        std::string currentPathStr{};
+                        std::vector<std::string> files{};
+                        for (int i{}; i < PATHDirs.size(); i++) {
+                                currentPathStr = PATHDirs[i] + "/" + command;
+                                currentPath = currentPathStr;
+                                if (isExecutable(currentPath)) {
+                                        print(command + " is " + currentPathStr, true);
+                                        return;
+                                }
+                        
+                        }
+
                         print(command + ": not found", true);
                 }
         }

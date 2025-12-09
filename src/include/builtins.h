@@ -9,7 +9,6 @@ namespace jsh {
                 "echo", "exit", "type"
         };
 
-        void print(std::string msg, const bool newline=true);
         void echo(const std::vector<std::string> args);
         void type(const std::string command);
 }
