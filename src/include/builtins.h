@@ -6,7 +6,7 @@
 
 namespace jsh {
         const std::vector<std::string> BUILTINS{
-                "echo", "exit", "type"
+                "echo", "exit", "type", "pwd"
         };
 
         void echo(const std::vector<std::string> args);
