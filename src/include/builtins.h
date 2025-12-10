@@ -13,7 +13,7 @@ namespace jsh {
         void type(const std::string command);
         void exec(const std::vector<std::string> args);
         void pwd();
-        void cd(const std::string newPath);
+        void cd(std::string newPath);
 }
 
 #endif
