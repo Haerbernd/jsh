@@ -3,6 +3,33 @@
 #include <sstream>
 
 namespace jsh {
+        std::vector<std::string> tokenize(const std::string& input) {
+                std::vector<std::string> tokens{};
+                std::string current{""};
+                bool inQuotes = false;
+
+                for (size_t i{0}; i < input.length(); i++) {
+                        char currentChar = input[i];
+
+                        if (currentChar == '\'') {
+                                inQuotes = !inQuotes;
+                        } else if (currentChar == ' ' && !inQuotes) {
+                                if (!current.empty()) {
+                                        tokens.push_back(current);
+                                        current.clear();
+                                }
+                        } else {
+                                current += currentChar;
+                        }
+                }
+
+                if (!current.empty()) {
+                        tokens.push_back(current);
+                }
+
+                return tokens;
+        }
+
         void print(std::string msg, const bool newline) {
                 if (newline) {
                         msg += "\n";
@@ -41,5 +68,18 @@ namespace jsh {
                 return (perms & std::filesystem::perms::owner_exec) != std::filesystem::perms::none or
                        (perms & std::filesystem::perms::group_exec) != std::filesystem::perms::none or
                        (perms & std::filesystem::perms::others_exec) != std::filesystem::perms::none;
+        }
+
+        std::string expandTilde(std::string newPath) {
+                if (newPath == "~" || newPath.rfind("~/", 0) == 0) {
+                        std::string home{};
+                        #ifdef _WIN32
+                        home = std::getenv("HOMEDRIVE") + std::getenv("HOMEPATH"); // might just be USERPROFILE instead
+                        #else
+                        home = std::getenv("HOME");
+                        #endif
+                        newPath = home + newPath.substr(1);
+                }
+                return newPath;
         }
 }

@@ -1,4 +1,5 @@
 #include "builtins.h"
+#include "os.h"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -16,15 +17,8 @@ int main() {
 
                 std::string input;
                 std::getline(std::cin, input);
-
-                std::stringstream strStream(input);
-                std::string tempString{};
-                std::vector<std::string> inputVec{};
-                const char inputDelimiter{' '};
-
-                while(std::getline(strStream, tempString, inputDelimiter)) {
-                        inputVec.push_back(tempString);
-                }
+ 
+                std::vector<std::string> inputVec = jsh::tokenize(input);
 
                 if (inputVec[0] == "exit") {
                         running = false;
@@ -42,8 +36,11 @@ int main() {
                 } else if (inputVec[0] == "pwd") {
                         jsh::pwd();
                 } else if (inputVec[0] == "cd") {
-                        jsh::cd(inputVec[1]);
+                        jsh::cd(jsh::expandTilde(inputVec[1]));
                 } else {
+                        for (int i{}; i < inputVec.size(); i++) {
+                                inputVec[i] = jsh::expandTilde(inputVec[i]);
+                        }
                         jsh::exec(inputVec);
                 }
         }

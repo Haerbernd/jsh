@@ -82,19 +82,7 @@ namespace jsh {
         }
 
         void cd(std::string newPath) {
-
-                if (newPath.find("~") != std::string::npos) {
-                        long unsigned int pos{newPath.find("~")};
-                        std::string tempPath{newPath.erase(pos, 1)};
-                        std::string home{};
-                        #ifdef _WIN32
-                        home = std::getenv("HOMEDRIVE") + std::getenv("HOMEPATH");
-                        #else
-                        home = std::getenv("HOME");
-                        #endif
-                        newPath = home + tempPath;
-                }
-                std::filesystem::path path{newPath};
+                std::filesystem::path path{expandTilde(newPath)}; 
 
                 try {
                         std::filesystem::current_path(path);
