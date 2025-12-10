@@ -12,6 +12,7 @@ namespace jsh {
         void echo(const std::vector<std::string> args);
         void type(const std::string command);
         void exec(const std::vector<std::string> args);
+        void pwd();
 }
 
 #endif

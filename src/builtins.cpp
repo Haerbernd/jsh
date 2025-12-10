@@ -76,4 +76,8 @@ namespace jsh {
                         _exit(127);
                 } 
         }
+
+        void pwd() {
+                print(std::filesystem::current_path().string(), true);
+        }
 }

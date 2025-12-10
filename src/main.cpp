@@ -39,6 +39,8 @@ int main() {
                         if (inputVec.size() > 1) {
                                 jsh::type(inputVec[1]); // return value is ignored
                         }
+                } else if (inputVec[0] == "pwd") {
+                        jsh::pwd();
                 } else {
                         jsh::exec(inputVec);
                 }
