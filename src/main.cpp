@@ -1,23 +1,40 @@
 #include "builtins.h"
+#include "completion.h"
 #include "os.h"
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <cstdlib>
+#include <readline/history.h>
+#include <readline/readline.h>
 
 int main() {
         bool running{true};
+        
+        // Flush after every std::cout / std:cerr
+        std::cout << std::unitbuf;
+        std::cerr << std::unitbuf;
 
-        while (running) {
-                // Flush after every std::cout / std:cerr
-                std::cout << std::unitbuf;
-                std::cerr << std::unitbuf;
+        rl_bind_key('\t', rl_complete);
+        using_history();
+        stifle_history(5000); // keep max 5000 entries
 
-                std::cout << "$ ";
+        jsh::init_completion();
 
-                std::string input;
-                std::getline(std::cin, input);
- 
+        std::string histfile = jsh::expandTilde("~/.jsh_history");
+        read_history(histfile.c_str());
+
+        while (running) { 
+                const char* input_ = readline("$ ");
+                if (!input_) {
+                        break; // EOF (Ctrl + D)
+                }
+                if (input_ && *input_) {
+                        add_history(input_);
+                }
+
+                std::string input(input_);
+
                 std::vector<std::string> inputVec = jsh::tokenize(input);
 
                 if (inputVec[0] == "exit") {
@@ -44,6 +61,8 @@ int main() {
                         jsh::exec(inputVec);
                 }
         }
+
+        append_history(history_length, histfile.c_str());
 
         return EXIT_SUCCESS;
 }
