@@ -1,6 +1,7 @@
 #include "builtins.h"
 #include "completion.h"
 #include "os.h"
+#include <filesystem>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -22,6 +23,10 @@ int main() {
         jsh::init_completion();
 
         std::string histfile = jsh::expandTilde("~/.jsh_history");
+        if (!std::filesystem::exists(histfile) {
+                std::ofstream ofs(histfile);
+                ofs.close();
+        }
         read_history(histfile.c_str());
 
         while (running) { 
