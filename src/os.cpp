@@ -6,14 +6,17 @@ namespace jsh {
         std::vector<std::string> tokenize(const std::string& input) {
                 std::vector<std::string> tokens{};
                 std::string current{""};
-                bool inQuotes = false;
+                bool inSingleQuotes{false};
+                bool inDoubleQuotes{false};
 
                 for (size_t i{0}; i < input.length(); i++) {
                         char currentChar = input[i];
 
-                        if (currentChar == '\'') {
-                                inQuotes = !inQuotes;
-                        } else if (currentChar == ' ' && !inQuotes) {
+                        if (currentChar == '\'' && !inDoubleQuotes) {
+                                inSingleQuotes = !inSingleQuotes;
+                        } else if (currentChar == '"') {
+                                inDoubleQuotes = !inDoubleQuotes;
+                        } else if (currentChar == ' ' && (!inSingleQuotes && !inDoubleQuotes)) {
                                 if (!current.empty()) {
                                         tokens.push_back(current);
                                         current.clear();
