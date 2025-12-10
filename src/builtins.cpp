@@ -80,4 +80,9 @@ namespace jsh {
         void pwd() {
                 print(std::filesystem::current_path().string(), true);
         }
+
+        void cd(const std::string newPath) {
+                std::filesystem::path path{newPath};
+                std::filesystem::current_path(path);
+        }
 }

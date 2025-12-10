@@ -41,6 +41,8 @@ int main() {
                         }
                 } else if (inputVec[0] == "pwd") {
                         jsh::pwd();
+                } else if (inputVec[0] == "cd") {
+                        jsh::cd(inputVec[1]);
                 } else {
                         jsh::exec(inputVec);
                 }
