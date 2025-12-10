@@ -10,6 +10,13 @@ namespace jsh {
                 std::cout << msg;
         }
 
+        void printErr(std::string msg, const bool newline) {
+                if (newline) {
+                        msg += "\n";
+                }
+                std::cerr << msg;
+        }
+
         std::vector<std::string> getPATHDirs() {
                 std::vector<std::string> PATHDirs{};
                 if (const char* PATHchar = std::getenv("PATH")) {
@@ -20,8 +27,6 @@ namespace jsh {
                                 PATHDirs.push_back(tempString);
                         }
                 }
-                std::string cwd{std::filesystem::current_path()};
-                PATHDirs.push_back(cwd);
                 return PATHDirs;
         }
 

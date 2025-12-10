@@ -37,10 +37,10 @@ int main() {
                         jsh::echo(echoVec);
                 } else if (inputVec[0] == "type") {
                         if (inputVec.size() > 1) {
-                                jsh::type(inputVec[1]);
+                                jsh::type(inputVec[1]); // return value is ignored
                         }
                 } else {
-                        std::cout << input << ": command not found" << std::endl;
+                        jsh::exec(inputVec);
                 }
         }
 

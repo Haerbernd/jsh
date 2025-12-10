@@ -14,6 +14,7 @@ namespace jsh {
         #endif
 
         void print(std::string msg, const bool newline=true);
+        void printErr(std::string msg, const bool newline=true);
         std::vector<std::string> getPATHDirs();
         bool isExecutable(const std::filesystem::path &p);
 }
