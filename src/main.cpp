@@ -2,6 +2,7 @@
 #include "completion.h"
 #include "os.h"
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -23,7 +24,7 @@ int main() {
         jsh::init_completion();
 
         std::string histfile = jsh::expandTilde("~/.jsh_history");
-        if (!std::filesystem::exists(histfile) {
+        if (!std::filesystem::exists(histfile)) {
                 std::ofstream ofs(histfile);
                 ofs.close();
         }
