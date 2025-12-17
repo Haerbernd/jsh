@@ -9,7 +9,9 @@
 #endif
 #include <sys/wait.h>
 
-namespace jsh {
+namespace jsh { 
+        bool showCwd = false;
+
         void echo(const std::vector<std::string> args) {
                 std::string msg{};
 
@@ -89,5 +91,9 @@ namespace jsh {
                 } catch (std::filesystem::filesystem_error& er) {
                         printErr("cd: " + newPath + ": No such file or directory", true);
                 }
+        }
+
+        void toggleCwd() {
+                showCwd = !showCwd;
         }
 }

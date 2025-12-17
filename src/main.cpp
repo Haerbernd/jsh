@@ -2,6 +2,7 @@
 #include "completion.h"
 #include "os.h"
 #include <filesystem>
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -31,7 +32,12 @@ int main() {
         read_history(histfile.c_str());
 
         while (running) { 
-                const char* input_ = readline("$ ");
+                const char* input_;
+                if (!jsh::showCwd) {
+                        input_ = readline("$ ");
+                } else { 
+                        input_ = readline(std::format("[{}]$ ", std::filesystem::current_path().string()).c_str());
+                }
                 if (!input_) {
                         break; // EOF (Ctrl + D)
                 }
@@ -60,6 +66,8 @@ int main() {
                         jsh::pwd();
                 } else if (inputVec[0] == "cd") {
                         jsh::cd(jsh::expandTilde(inputVec[1]));
+                } else if (inputVec[0] == "cwd") {
+                        jsh::toggleCwd();
                 } else {
                         for (int i{}; i < inputVec.size(); i++) {
                                 inputVec[i] = jsh::expandTilde(inputVec[i]);
