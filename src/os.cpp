@@ -44,7 +44,7 @@ namespace jsh {
                                         tokens.push_back(current);
                                         current.clear();
                                 }
-                        } else if (backslashEscape) {
+                        } else if (backslashEscape && inDoubleQuotes) {
                                 current += '\\';
                                 current += currentChar;
                         } else {
