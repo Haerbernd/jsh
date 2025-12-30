@@ -25,9 +25,15 @@ namespace jsh {
                                 backslashEscape = false;
                         }
 
-                        if (currentChar == '\\' && !inSingleQuotes && !backslashEscape) {
+                        if (currentChar == '\\' && !inDoubleQuotes && !inSingleQuotes && !backslashEscape) {
                                 backslashEscape = true;
                                 lastBackslash = i;
+                        } else if (currentChar == '\\' && inDoubleQuotes) {
+                                if (!backslashEscape) {
+                                        backslashEscape = true;
+                                        lastBackslash = i;
+                                }
+                                current += currentChar;
                         } else if (currentChar == '\'' && !inDoubleQuotes && !backslashEscape) {
                                 inSingleQuotes = !inSingleQuotes;
                         } else if (currentChar == '"' && !inSingleQuotes && !backslashEscape) {
