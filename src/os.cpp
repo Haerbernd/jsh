@@ -30,7 +30,7 @@ namespace jsh {
                                 lastBackslash = i;
                         } else if (currentChar == '\'' && !inDoubleQuotes && !backslashEscape) {
                                 inSingleQuotes = !inSingleQuotes;
-                        } else if (currentChar == '"' && !backslashEscape) {
+                        } else if (currentChar == '"' && !inSingleQuotes && !backslashEscape) {
                                 inDoubleQuotes = !inDoubleQuotes;
                         } else if (currentChar == ' ' && (!inSingleQuotes && !inDoubleQuotes && !backslashEscape)) {
                                 if (!current.empty()) {
