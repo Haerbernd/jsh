@@ -32,8 +32,8 @@ namespace jsh {
                                 if (!backslashEscape) {
                                         backslashEscape = true;
                                         lastBackslash = i;
+                                        current += currentChar;
                                 }
-                                current += currentChar;
                         } else if (currentChar == '\'' && !inDoubleQuotes && !backslashEscape) {
                                 inSingleQuotes = !inSingleQuotes;
                         } else if (currentChar == '"' && !inSingleQuotes && !backslashEscape) {
