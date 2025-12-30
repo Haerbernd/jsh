@@ -25,7 +25,7 @@ namespace jsh {
                                 backslashEscape = false;
                         }
 
-                        if (currentChar == '\\' && !backslashEscape) {
+                        if (currentChar == '\\' && !inSingleQuotes && !inDoubleQuotes && !backslashEscape) {
                                 backslashEscape = true;
                                 lastBackslash = i;
                         } else if (currentChar == '\'' && !inDoubleQuotes && !backslashEscape) {
