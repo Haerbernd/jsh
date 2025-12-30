@@ -28,10 +28,11 @@ namespace jsh {
                         if (currentChar == '\\' && !inDoubleQuotes && !inSingleQuotes && !backslashEscape) {
                                 backslashEscape = true;
                                 lastBackslash = i;
-                        } else if (currentChar == '\\' && inDoubleQuotes) {
+                        } else if ((currentChar == '\\' && inDoubleQuotes) || (currentChar == '"' && inDoubleQuotes && backslashEscape)) {
                                 if (!backslashEscape) {
                                         backslashEscape = true;
                                         lastBackslash = i;
+                                } else {
                                         current += currentChar;
                                 }
                         } else if (currentChar == '\'' && !inDoubleQuotes && !backslashEscape) {
@@ -43,6 +44,9 @@ namespace jsh {
                                         tokens.push_back(current);
                                         current.clear();
                                 }
+                        } else if (backslashEscape) {
+                                current += '\\';
+                                current += currentChar;
                         } else {
                                 current += currentChar;
                         }
