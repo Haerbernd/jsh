@@ -96,4 +96,8 @@ namespace jsh {
         void toggleCwd() {
                 showCwd = !showCwd;
         }
+
+        void help() {
+                exec(std::vector<std::string>{"man", "jsh"});
+        }
 }

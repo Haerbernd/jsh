@@ -3,20 +3,36 @@
 #include <sstream>
 
 namespace jsh {
+        /*
+         * Tokenizes the input string into a string vector. It adheres to common rules regarding special characters.
+         * @param input: The input string. Must be a std::string.
+         * @return: The tokenized input as a std::string<std::vector>.
+         * The input string will be splitted on whitespaces unless each one is escaped with a backslash or they are in a quote.
+         * A backslash can escape single and double quotes, whitespaces, backslashes, asterisks (*) and dollar signs. Every other character is treated as normal.
+         */
         std::vector<std::string> tokenize(const std::string& input) {
                 std::vector<std::string> tokens{};
                 std::string current{""};
                 bool inSingleQuotes{false};
                 bool inDoubleQuotes{false};
+                bool backslashEscape{false};
+                size_t lastBackslash{};
 
                 for (size_t i{0}; i < input.length(); i++) {
                         char currentChar = input[i];
 
-                        if (currentChar == '\'' && !inDoubleQuotes) {
+                        if (backslashEscape && i == lastBackslash + 2) {
+                                backslashEscape = false;
+                        }
+
+                        if (currentChar == '\\' && !backslashEscape) {
+                                backslashEscape = true;
+                                lastBackslash = i;
+                        } else if (currentChar == '\'' && !inDoubleQuotes && !backslashEscape) {
                                 inSingleQuotes = !inSingleQuotes;
-                        } else if (currentChar == '"') {
+                        } else if (currentChar == '"' && !backslashEscape) {
                                 inDoubleQuotes = !inDoubleQuotes;
-                        } else if (currentChar == ' ' && (!inSingleQuotes && !inDoubleQuotes)) {
+                        } else if (currentChar == ' ' && (!inSingleQuotes && !inDoubleQuotes && !backslashEscape)) {
                                 if (!current.empty()) {
                                         tokens.push_back(current);
                                         current.clear();

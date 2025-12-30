@@ -6,7 +6,7 @@
 
 namespace jsh {
         const std::vector<std::string> BUILTINS{
-                "echo", "exit", "type", "pwd", "cd"
+                "echo", "exit", "type", "pwd", "cd", "help"
         };
 
         extern bool showCwd;
@@ -17,6 +17,7 @@ namespace jsh {
         void pwd();
         void cd(std::string newPath);
         void toggleCwd();
+        void help();
 }
 
 #endif

@@ -68,6 +68,8 @@ int main() {
                         jsh::cd(jsh::expandTilde(inputVec[1]));
                 } else if (inputVec[0] == "cwd") {
                         jsh::toggleCwd();
+                } else if (inputVec[0] == "help") {
+                        jsh::help();
                 } else {
                         for (int i{}; i < inputVec.size(); i++) {
                                 inputVec[i] = jsh::expandTilde(inputVec[i]);
