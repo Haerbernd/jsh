@@ -47,7 +47,9 @@ int main() {
 
                 std::string input(input_);
 
-                std::vector<std::string> inputVec = jsh::tokenize(input);
+                jsh::inputMetaData meta{};
+
+                std::vector<std::string> inputVec = jsh::tokenize(input, &meta);
 
                 if (inputVec[0] == "exit") {
                         running = false;
@@ -75,6 +77,10 @@ int main() {
                                 inputVec[i] = jsh::expandTilde(inputVec[i]);
                         }
                         jsh::exec(inputVec);
+                }
+
+                if (meta.outputRedirection) {
+                        jsh::writeToFile("", meta.outputRedirectionFile);
                 }
         }
 

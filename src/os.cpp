@@ -1,4 +1,5 @@
 #include "os.h"
+#include <fstream>
 #include <iostream>
 #include <sstream>
 
@@ -6,17 +7,19 @@ namespace jsh {
         /*
          * Tokenizes the input string into a string vector. It adheres to common rules regarding special characters.
          * @param input: The input string. Must be a std::string.
+         * @param meta: A pointer to the inputMetaData struct to synchronize meta data about the current input.
          * @return: The tokenized input as a std::string<std::vector>.
          * The input string will be splitted on whitespaces unless each one is escaped with a backslash or they are in a quote.
          * A backslash can escape single and double quotes, whitespaces, backslashes, asterisks (*) and dollar signs. Every other character is treated as normal.
          */
-        std::vector<std::string> tokenize(const std::string& input) {
+        std::vector<std::string> tokenize(const std::string& input, inputMetaData* meta) {
                 std::vector<std::string> tokens{};
                 std::string current{""};
                 bool inSingleQuotes{false};
                 bool inDoubleQuotes{false};
                 bool backslashEscape{false};
                 size_t lastBackslash{};
+                bool isOne{false};
 
                 for (size_t i{0}; i < input.length(); i++) {
                         char currentChar = input[i];
@@ -40,14 +43,29 @@ namespace jsh {
                         } else if (currentChar == '"' && !inSingleQuotes && !backslashEscape) {
                                 inDoubleQuotes = !inDoubleQuotes;
                         } else if (currentChar == ' ' && (!inSingleQuotes && !inDoubleQuotes && !backslashEscape)) {
-                                if (!current.empty()) {
+                                if (!current.empty() && !meta->outputRedirection) {
                                         tokens.push_back(current);
                                         current.clear();
+                                } else {
+                                        meta->outputRedirectionFile = current;
                                 }
                         } else if (backslashEscape && inDoubleQuotes) {
                                 current += '\\';
                                 current += currentChar;
+                        } else if (currentChar == '>' && !inSingleQuotes && !inDoubleQuotes && !backslashEscape) {
+                                if (isOne) {
+                                        isOne = false;
+                                }
+
+                                meta->outputRedirection = true;
+                        } else if (currentChar == '1' && !inSingleQuotes && !inDoubleQuotes && !backslashEscape) {
+                                isOne = true;
                         } else {
+                                if (isOne) {
+                                        isOne = false;
+                                        current += '1';
+                                }
+
                                 current += currentChar;
                         }
                 }
@@ -110,5 +128,14 @@ namespace jsh {
                         newPath = home + newPath.substr(1);
                 }
                 return newPath;
+        }
+
+        void writeToFile(std::string text, std::string filepath) {
+                std::ofstream ofs(filepath);
+                if (!ofs) {
+                        printErr(std::format("{} could not be opened or created for writing", filepath), true);
+                }
+                ofs << text;
+                ofs.close();
         }
 }
