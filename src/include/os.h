@@ -15,8 +15,7 @@ namespace jsh {
 
         struct inputMetaData{
                 bool outputRedirection{false};
-                std::string outputRedirectionFile{};
-                std::string capturedSTDOUT{};
+                std::string outputRedirectionFile{""};
         };
 
         std::vector<std::string> tokenize(const std::string& input, inputMetaData* meta);
@@ -27,6 +26,7 @@ namespace jsh {
         bool isExecutable(const std::filesystem::path &p);
         std::string expandTilde(std::string newPath);
         void writeToFile(std::string text, std::string filepath);
+        void apply_redirections(const inputMetaData& meta);
 }
 
 #endif

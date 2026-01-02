@@ -1,19 +1,27 @@
 #ifndef BUILTINS_H
 #define BUILTINS_H
 
+#include "os.h"
+
+#include <functional>
+#include <unordered_map>
 #include <string>
 #include <vector>
 
 namespace jsh {
-        const std::vector<std::string> BUILTINS{
+        using BuiltinFn = std::function<void(const std::vector<std::string>&)>;
+
+        extern std::unordered_map<std::string, BuiltinFn> builtins;
+
+        const std::vector<std::string> BUILTINS {
                 "echo", "exit", "type", "pwd", "cd", "help"
-        };
+        }; 
 
         extern bool showCwd;
 
         void echo(const std::vector<std::string> args);
         void type(const std::string command);
-        void exec(const std::vector<std::string> args);
+        void exec(const std::vector<std::string>& args, inputMetaData& meta);
         void pwd();
         void cd(std::string newPath);
         void toggleCwd();

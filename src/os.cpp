@@ -1,7 +1,16 @@
 #include "os.h"
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+
+#ifdef _WIN32
+        #include <process.h>
+#else
+        #include <unistd.h>
+#endif
+#include <fcntl.h>
+#include <sys/stat.h>
 
 namespace jsh {
         /*
@@ -70,8 +79,10 @@ namespace jsh {
                         }
                 }
 
-                if (!current.empty()) {
+                if (!current.empty() && !meta->outputRedirection) {
                         tokens.push_back(current);
+                } else {
+                        meta->outputRedirectionFile = current;
                 }
 
                 return tokens;
@@ -137,5 +148,18 @@ namespace jsh {
                 }
                 ofs << text;
                 ofs.close();
+        }
+
+        void apply_redirections(const inputMetaData& meta) {
+                if (meta.outputRedirection) {
+                        int fd = open(meta.outputRedirectionFile.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                        if (fd == -1) {
+                                perror("open");
+                                _exit(1);
+                        }
+                
+                        dup2(fd, STDOUT_FILENO);
+                        close(fd);
+                }
         }
 }

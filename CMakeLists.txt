@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.30.5)
 project(jsh
         LANGUAGES CXX
         DESCRIPTION "jsh - JanShell my own shell"
+        VERSION 1.0.0.0
         HOMEPAGE_URL "https://jsh.haerbernd.dev"
 )
 

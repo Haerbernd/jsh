@@ -10,12 +10,20 @@
 #include <sys/wait.h>
 
 namespace jsh { 
+        std::unordered_map<std::string, BuiltinFn> builtins = {
+                {"echo", echo},
+                {"type", [](const auto& args) { type(args.at(1)); }},
+                {"pwd", [](const auto&) { pwd(); }},
+                {"cd", [](const auto& args) { cd(expandTilde(args.at(1))); }},
+                {"help", [](const auto&) { help(); }},
+        };
+
         bool showCwd = false;
 
         void echo(const std::vector<std::string> args) {
                 std::string msg{};
 
-                for (int i{0}; i < args.size(); i++) {
+                for (int i{1}; i < args.size(); i++) {
                         msg += args[i] + " ";
                 }
 
@@ -45,7 +53,7 @@ namespace jsh {
                 }
         }
 
-        void exec(const std::vector<std::string> args) {
+        void exec(const std::vector<std::string>& args, inputMetaData& meta) {
                 pid_t pid = fork();
                 int status; // CAUTION: not initialized
 
@@ -57,12 +65,15 @@ namespace jsh {
                         waitpid(pid, &status, 0);
                         return;
                 } else {
+                        apply_redirections(meta);
+
                         std::vector<char*> argv;
                         argv.reserve(args.size() + 1);
                         for (const std::string& s : args) {
                                 argv.push_back(const_cast<char*>(s.c_str()));
                         }
                         argv.push_back(nullptr);
+
                         execvp(argv[0], argv.data());
                         
                         if (errno == ENOENT) {
@@ -98,6 +109,7 @@ namespace jsh {
         }
 
         void help() {
-                exec(std::vector<std::string>{"man", "jsh"});
+                inputMetaData meta{};
+                exec(std::vector<std::string>{"man", "jsh"}, meta);
         }
 }

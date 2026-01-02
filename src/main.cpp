@@ -1,15 +1,24 @@
 #include "builtins.h"
 #include "completion.h"
 #include "os.h"
+
 #include <filesystem>
 #include <format>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <sstream>
+
 #include <cstdlib>
+
 #include <readline/history.h>
 #include <readline/readline.h>
+
+#ifdef _WIN32
+        #include <process.h>
+#else
+        #include <unistd.h>
+#endif
 
 int main() {
         bool running{true};
@@ -54,34 +63,21 @@ int main() {
                 if (inputVec[0] == "exit") {
                         running = false;
                         break;
-                } else if (inputVec[0] == "echo") {
-                        std::vector<std::string> echoVec{};
-                        for (int i{1}; i < inputVec.size(); i++) {
-                                echoVec.push_back(inputVec[i]);
-                        }
-                        jsh::echo(echoVec);
-                } else if (inputVec[0] == "type") {
-                        if (inputVec.size() > 1) {
-                                jsh::type(inputVec[1]); // return value is ignored
-                        }
-                } else if (inputVec[0] == "pwd") {
-                        jsh::pwd();
-                } else if (inputVec[0] == "cd") {
-                        jsh::cd(jsh::expandTilde(inputVec[1]));
-                } else if (inputVec[0] == "cwd") {
-                        jsh::toggleCwd();
-                } else if (inputVec[0] == "help") {
-                        jsh::help();
                 } else {
-                        for (int i{}; i < inputVec.size(); i++) {
-                                inputVec[i] = jsh::expandTilde(inputVec[i]);
-                        }
-                        jsh::exec(inputVec);
-                }
-
-                if (meta.outputRedirection) {
-                        jsh::writeToFile("", meta.outputRedirectionFile);
-                }
+                        auto it = jsh::builtins.find(inputVec[0]);
+                        if (it != jsh::builtins.end()) {
+                                int saved_stdout = dup(STDOUT_FILENO);
+                                jsh::apply_redirections(meta);
+                                it->second(inputVec);
+                                dup2(saved_stdout, STDOUT_FILENO);
+                                close(saved_stdout);
+                       } else {
+                                for (int i{}; i < inputVec.size(); i++) {
+                                        inputVec[i] = jsh::expandTilde(inputVec[i]);
+                                }
+                                jsh::exec(inputVec, meta);
+                       }
+                } 
         }
 
         append_history(history_length, histfile.c_str());
