@@ -54,6 +54,7 @@ namespace jsh {
                         } else if (currentChar == ' ' && (!inSingleQuotes && !inDoubleQuotes && !backslashEscape)) {
                                 if (isOne) {
                                         isOne = false;
+                                        tokens += '1';
                                 }
 
                                 if (!current.empty() && !meta->outputRedirection) {
