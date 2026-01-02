@@ -52,6 +52,10 @@ namespace jsh {
                         } else if (currentChar == '"' && !inSingleQuotes && !backslashEscape) {
                                 inDoubleQuotes = !inDoubleQuotes;
                         } else if (currentChar == ' ' && (!inSingleQuotes && !inDoubleQuotes && !backslashEscape)) {
+                                if (isOne) {
+                                        isOne = false;
+                                }
+
                                 if (!current.empty() && !meta->outputRedirection) {
                                         tokens.push_back(current);
                                         current.clear();
@@ -67,7 +71,10 @@ namespace jsh {
                                 }
 
                                 meta->outputRedirection = true;
-                        } else if (currentChar == '1' && !inSingleQuotes && !inDoubleQuotes && !backslashEscape) {
+                        } else if (currentChar == '1' && (!inSingleQuotes && !inDoubleQuotes && !backslashEscape)) {
+                                if (isOne) {
+                                        current += '1';
+                                }
                                 isOne = true;
                         } else {
                                 if (isOne) {
@@ -77,6 +84,10 @@ namespace jsh {
 
                                 current += currentChar;
                         }
+                }
+
+                if (isOne) {
+                        current += '1';
                 }
 
                 if (!current.empty() && !meta->outputRedirection) {
