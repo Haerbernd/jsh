@@ -66,11 +66,20 @@ int main() {
                 } else {
                         auto it = jsh::builtins.find(inputVec[0]);
                         if (it != jsh::builtins.end()) {
-                                int saved_stdout = dup(STDOUT_FILENO);
+                                int saved_fd;
+                                if (meta.redirect_stdout) {
+                                        saved_fd = dup(STDOUT_FILENO);
+                                } else if (meta.redirect_stderr) {
+                                        saved_fd = dup(STDERR_FILENO);
+                                }
                                 jsh::apply_redirections(meta);
                                 it->second(inputVec);
-                                dup2(saved_stdout, STDOUT_FILENO);
-                                close(saved_stdout);
+                                if (meta.redirect_stdout) {
+                                        dup2(saved_fd, STDOUT_FILENO);
+                                } else if (meta.redirect_stderr) {
+                                        dup2(saved_fd, STDERR_FILENO);
+                                }
+                                close(saved_fd);
                        } else {
                                 for (int i{}; i < inputVec.size(); i++) {
                                         inputVec[i] = jsh::expandTilde(inputVec[i]);
