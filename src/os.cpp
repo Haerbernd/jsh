@@ -29,6 +29,7 @@ namespace jsh {
                 bool backslashEscape{false};
                 size_t lastBackslash{};
                 bool isOne{false};
+                bool isTwo{false};
 
                 for (size_t i{0}; i < input.length(); i++) {
                         char currentChar = input[i];
@@ -55,13 +56,16 @@ namespace jsh {
                                 if (isOne) {
                                         isOne = false;
                                         current += '1';
+                                } else if (isTwo) {
+                                        isTwo = false;
+                                        current += '2';
                                 }
 
-                                if (!current.empty() && !meta->outputRedirection) {
+                                if (!current.empty() && !meta->redirect_stdout && !meta->redirect_stderr) {
                                         tokens.push_back(current);
                                         current.clear();
                                 } else {
-                                        meta->outputRedirectionFile = current;
+                                        meta->redirect_file = current;
                                 }
                         } else if (backslashEscape && inDoubleQuotes) {
                                 current += '\\';
@@ -69,18 +73,30 @@ namespace jsh {
                         } else if (currentChar == '>' && !inSingleQuotes && !inDoubleQuotes && !backslashEscape) {
                                 if (isOne) {
                                         isOne = false;
+                                        meta->redirect_stdout = true;
+                                } else if (isTwo) {
+                                        isTwo = false;
+                                        meta->redirect_stderr = true;
+                                } else {
+                                        meta->redirect_stdout = true;
                                 }
-
-                                meta->outputRedirection = true;
                         } else if (currentChar == '1' && (!inSingleQuotes && !inDoubleQuotes && !backslashEscape)) {
                                 if (isOne) {
                                         current += '1';
                                 }
                                 isOne = true;
+                        } else if (currentChar == '2' && (!inSingleQuotes && !inDoubleQuotes && !backslashEscape)) {
+                                if (isTwo) {
+                                        current += '2';
+                                }
+                                isTwo = true;
                         } else {
                                 if (isOne) {
                                         isOne = false;
                                         current += '1';
+                                } else if (isTwo) {
+                                        isTwo = false;
+                                        current += '2';
                                 }
 
                                 current += currentChar;
@@ -89,12 +105,14 @@ namespace jsh {
 
                 if (isOne) {
                         current += '1';
+                } else if (isTwo) {
+                        current += '2';
                 }
 
-                if (!current.empty() && !meta->outputRedirection) {
+                if (!current.empty() && !meta->redirect_stdout && !meta->redirect_stderr) {
                         tokens.push_back(current);
                 } else {
-                        meta->outputRedirectionFile = current;
+                        meta->redirect_file = current;
                 }
 
                 return tokens;
@@ -163,15 +181,16 @@ namespace jsh {
         }
 
         void apply_redirections(const inputMetaData& meta) {
-                if (meta.outputRedirection) {
-                        int fd = open(meta.outputRedirectionFile.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-                        if (fd == -1) {
-                                perror("open");
-                                _exit(1);
-                        }
-                
-                        dup2(fd, STDOUT_FILENO);
-                        close(fd);
+                int fd = open(meta.redirect_file.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                if (fd == -1) {
+                        perror("open");
+                        _exit(1);
                 }
+                if (meta.redirect_stdout) {
+                        dup2(fd, STDOUT_FILENO);
+                } else if (meta.redirect_stderr) {
+                        dup2(fd, STDERR_FILENO);
+                }
+                close(fd); 
         }
 }

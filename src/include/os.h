@@ -14,8 +14,10 @@ namespace jsh {
         #endif
 
         struct inputMetaData{
-                bool outputRedirection{false};
-                std::string outputRedirectionFile{""};
+                bool redirect_stdout{false};
+                bool redirect_stderr{false};
+                bool redirect_stdin{false};   // not implemented for now
+                std::string redirect_file{""};
         };
 
         std::vector<std::string> tokenize(const std::string& input, inputMetaData* meta);
