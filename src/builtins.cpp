@@ -14,8 +14,15 @@ namespace jsh {
                 {"echo", echo},
                 {"type", [](const auto& args) { type(args.at(1)); }},
                 {"pwd", [](const auto&) { pwd(); }},
-                {"cd", [](const auto& args) { cd(expandTilde(args.at(1))); }},
+                {"cd", [](const auto& args) {
+                        if (args.size() > 1) {
+                                cd(expandTilde(args[1]));
+                        } else {
+                                cd();
+                        }
+                }},
                 {"help", [](const auto&) { help(); }},
+                {"cwd", [](const auto&) { toggleCwd(); }},
         };
 
         bool showCwd = false;

@@ -14,7 +14,7 @@ namespace jsh {
         extern std::unordered_map<std::string, BuiltinFn> builtins;
 
         const std::vector<std::string> BUILTINS {
-                "echo", "exit", "type", "pwd", "cd", "help"
+                "echo", "exit", "type", "pwd", "cd", "help", "cwd"
         }; 
 
         extern bool showCwd;
@@ -23,7 +23,7 @@ namespace jsh {
         void type(const std::string command);
         void exec(const std::vector<std::string>& args, inputMetaData& meta);
         void pwd();
-        void cd(std::string newPath);
+        void cd(std::string newPath="~");
         void toggleCwd();
         void help();
 }
