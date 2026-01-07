@@ -7,7 +7,6 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <sstream>
 
 #include <cstdlib>
 
@@ -38,7 +37,7 @@ int main() {
                 std::ofstream ofs(histfile);
                 ofs.close();
         }
-        read_history(histfile.c_str());
+        read_history(histfile.c_str()); 
 
         while (running) { 
                 const char* input_;

@@ -17,9 +17,10 @@ namespace jsh {
          * Tokenizes the input string into a string vector. It adheres to common rules regarding special characters.
          * @param input: The input string. Must be a std::string.
          * @param meta: A pointer to the inputMetaData struct to synchronize meta data about the current input.
-         * @return: The tokenized input as a std::string<std::vector>.
+         * @return: The tokenized input as a std::vector<std::string>.
          * The input string will be splitted on whitespaces unless each one is escaped with a backslash or they are in a quote.
-         * A backslash can escape single and double quotes, whitespaces, backslashes, asterisks (*) and dollar signs. Every other character is treated as normal.
+         * A backslash can escape single and double quotes, whitespaces, backslashes. Every other character is treated as normal.
+         * > is interpreted as 1> and both redirect STDOUT to a given file. 2> does the same with STDERR, and 0> to STDIN.
          */
         std::vector<std::string> tokenize(const std::string& input, inputMetaData* meta) {
                 std::vector<std::string> tokens{};
@@ -118,6 +119,11 @@ namespace jsh {
                 return tokens;
         }
 
+        /*
+         * Prints the given string. Currently to STDOUT, will maybe be configurable later to other targets (such as a debug file)
+         * @param msg: The printed message.
+         * @param newline: Whether a newline character (\n) should be appended to the message, default is true.
+         */
         void print(std::string msg, const bool newline) {
                 if (newline) {
                         msg += "\n";
@@ -125,6 +131,11 @@ namespace jsh {
                 std::cout << msg;
         }
 
+        /*
+         * Prints the given string as an error. Currently to STDERR, will maybe be configurable later to other targets (such as a debug file)
+         * @param msg: The printed message.
+         * @param newline: Whether a newline character (\n) should be appended to the message, default is true.
+         */
         void printErr(std::string msg, const bool newline) {
                 if (newline) {
                         msg += "\n";
@@ -132,6 +143,7 @@ namespace jsh {
                 std::cerr << msg;
         }
 
+        /**/
         std::vector<std::string> getPATHDirs() {
                 std::vector<std::string> PATHDirs{};
                 if (const char* PATHchar = std::getenv("PATH")) {
