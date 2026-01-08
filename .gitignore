@@ -2,3 +2,4 @@ build/
 *.zip
 compile_commands.json
 .cache/
+Testing/

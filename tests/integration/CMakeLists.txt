@@ -1,0 +1,4 @@
+add_executable(test_apply_redirections test_apply_redirections.cpp)
+target_link_libraries(test_apply_redirections jsh_core)
+
+add_test(NAME apply_redirections COMMAND test_apply_redirections)

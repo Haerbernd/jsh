@@ -1,4 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR}/src/include)
-
-add_executable(jsh ./main.cpp ./builtins.cpp ./os.cpp ./completion.cpp)
-target_link_libraries(jsh readline)
+add_executable(jsh ./main.cpp)
+add_library(jsh_core SHARED ./builtins.cpp ./os.cpp ./completion.cpp)
+target_link_libraries(jsh_core readline)
+target_link_libraries(jsh readline jsh_core)

@@ -193,7 +193,7 @@ namespace jsh {
         }
 
         void apply_redirections(const inputMetaData& meta) {
-                if (!meta.redirect_stdout || !meta.redirect_stderr) {
+                if (!meta.redirect_stdout && !meta.redirect_stderr) {
                         return;
                 }
                 int fd = open(meta.redirect_file.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
