@@ -1,4 +1,5 @@
 # JSH
+[![CMake Linux](https://github.com/Haerbernd/jsh/actions/workflows/cmake-single-platform.yml/badge.svg?branch=master)](https://github.com/Haerbernd/jsh/actions/workflows/cmake-single-platform.yml)
 A bash-inspired shell created in part through CodeCrafters build-your-own-shell challenge.
 
 ## Dependencies
