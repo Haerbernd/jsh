@@ -1,5 +1,5 @@
 # JSH
-[![CMake Linux](https://github.com/Haerbernd/jsh/actions/workflows/cmake-single-platform.yml/badge.svg?branch=master)](https://github.com/Haerbernd/jsh/actions/workflows/cmake-single-platform.yml)
+[![Arch (CMake)](https://github.com/Haerbernd/jsh/actions/workflows/arch-cmake.yml/badge.svg)](https://github.com/Haerbernd/jsh/actions/workflows/arch-cmake.yml) [![Ubuntu (CMake)](https://github.com/Haerbernd/jsh/actions/workflows/ubuntu-cmake.yml/badge.svg)](https://github.com/Haerbernd/jsh/actions/workflows/ubuntu-cmake.yml)
 
 A bash-inspired shell created in part through CodeCrafters build-your-own-shell challenge.
 
