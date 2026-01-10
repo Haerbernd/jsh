@@ -1,18 +1,37 @@
+/*
+ *  jsh - a bash-inspired linux shell
+ *  Copyright (C) 2026  Jan-Hendrik Schmidt
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 #include "completion.h"
 #include "builtins.h"
 #include "os.h"
+
 #include <filesystem>
 #include <string>
 #include <vector>
+
 #include <cstdlib>
 #include <cstring>
+
 #include <readline/history.h>
 #include <readline/readline.h>
 
 namespace jsh {
-        // ------------------------------------------------------------
-        // 1. Cache all executables from PATH (once at startup)
-        // ------------------------------------------------------------
         static std::vector<std::string> PATH_CMDS;
 
         static void init_path_commands() {
@@ -36,9 +55,6 @@ namespace jsh {
                 }
         }
 
-        // ------------------------------------------------------------
-        // 2. Generator for command-name completion
-        // ------------------------------------------------------------
         static char* cmd_generator(const char* text, int state) {
                 static size_t index{0};
                 static std::vector<std::string> matches;
@@ -71,9 +87,6 @@ namespace jsh {
                 return strdup(matches[index++].c_str());
         }
 
-        // ------------------------------------------------------------
-        // 3. Main completion dispatcher
-        // ------------------------------------------------------------
         char** completion(const char* text, int start, int end) {
                 (void)end; // ununsed but must exist
                 
@@ -86,10 +99,6 @@ namespace jsh {
                 return nullptr;
         }
 
-        
-        // ------------------------------------------------------------
-        // 4. Initialization function to call once at startup
-        // ------------------------------------------------------------
         void init_completion() {
                 init_path_commands();
                 rl_attempted_completion_function = completion;
