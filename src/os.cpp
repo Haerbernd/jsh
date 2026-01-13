@@ -38,7 +38,7 @@ namespace jsh {
          * @param input: The input string. Must be a std::string.
          * @param meta: A pointer to the inputMetaData struct to synchronize meta data about the current input.
          * @return: The tokenized input as a std::vector<std::string>.
-         * The input string will be splitted on whitespaces unless each one is escaped with a backslash or they are in a quote.
+         * The input string will be split on whitespaces unless each one is escaped with a backslash or they are in a quote.
          * A backslash can escape single and double quotes, whitespaces, backslashes. Every other character is treated as normal.
          * > is interpreted as 1> and both redirect STDOUT to a given file. 2> does the same with STDERR, and 0> to STDIN.
          */
@@ -53,7 +53,7 @@ namespace jsh {
                 bool isTwo{false};
 
                 for (size_t i{0}; i < input.length(); i++) {
-                        char currentChar = input[i];
+                        const char currentChar = input[i];
 
                         if (backslashEscape && i == lastBackslash + 2) {
                                 backslashEscape = false;
@@ -167,7 +167,7 @@ namespace jsh {
         std::vector<std::string> getPATHDirs() {
                 std::vector<std::string> PATHDirs{};
                 if (const char* PATHchar = std::getenv("PATH")) {
-                        std::string PATH{PATHchar};
+                        const std::string PATH{PATHchar};
                         std::stringstream strStream(PATH);
                         std::string tempString{};
                         while (std::getline(strStream, tempString, PATH_LIST_SEPARATOR)) {
@@ -178,12 +178,12 @@ namespace jsh {
         }
 
         bool isExecutable(const std::filesystem::path &p) {
-                auto status{std::filesystem::status(p)};
+                const std::filesystem::file_status status{std::filesystem::status(p)};
                 if (!std::filesystem::exists(status) or !std::filesystem::is_regular_file(status)) {
                         return false;
                 }
 
-                std::filesystem::perms perms = status.permissions();
+                const std::filesystem::perms perms = status.permissions();
 
                 return (perms & std::filesystem::perms::owner_exec) != std::filesystem::perms::none or
                        (perms & std::filesystem::perms::group_exec) != std::filesystem::perms::none or
@@ -203,7 +203,7 @@ namespace jsh {
                 return newPath;
         }
 
-        void writeToFile(std::string text, std::string filepath) {
+        void writeToFile(const std::string& text, std::string filepath) {
                 std::ofstream ofs(filepath);
                 if (!ofs) {
                         printErr(std::format("{} could not be opened or created for writing", filepath), true);

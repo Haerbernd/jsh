@@ -48,7 +48,7 @@ namespace jsh {
 
         bool showCwd = false;
 
-        void echo(const std::vector<std::string> args) {
+        void echo(const std::vector<std::string>& args) {
                 std::string msg{};
 
                 for (int i{1}; i < args.size(); i++) {
@@ -58,11 +58,11 @@ namespace jsh {
                 print(msg, true);
         }
 
-        void type(const std::string command) {
+        void type(const std::string& command) {
                 if (std::find(BUILTINS.begin(), BUILTINS.end(), command) != BUILTINS.end()) {
                         print(command + " is a shell builtin", true);
                 } else {
-                        std::vector<std::string> PATHDirs{getPATHDirs()};
+                        const std::vector<std::string> PATHDirs{getPATHDirs()};
                        
                         std::filesystem::path currentPath{};
                         std::string currentPathStr{};
@@ -81,8 +81,8 @@ namespace jsh {
                 }
         }
 
-        void exec(const std::vector<std::string>& args, inputMetaData& meta) {
-                pid_t pid = fork();
+        void exec(const std::vector<std::string>& args, const inputMetaData& meta) {
+                const pid_t pid = fork();
                 int status; // CAUTION: not initialized
 
                 if (pid == -1) {
@@ -122,7 +122,7 @@ namespace jsh {
                 print(std::filesystem::current_path().string(), true);
         }
 
-        void cd(std::string newPath) {
+        void cd(const std::string& newPath) {
                 std::filesystem::path path{expandTilde(newPath)}; 
 
                 try {
@@ -137,7 +137,7 @@ namespace jsh {
         }
 
         void help() {
-                inputMetaData meta{};
+                const inputMetaData meta{};
                 exec(std::vector<std::string>{"man", "jsh"}, meta);
         }
 }

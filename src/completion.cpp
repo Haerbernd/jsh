@@ -55,7 +55,7 @@ namespace jsh {
                 }
         }
 
-        static char* cmd_generator(const char* text, int state) {
+        static char* cmd_generator(const char* text, const int state) {
                 static size_t index{0};
                 static std::vector<std::string> matches;
 
@@ -87,8 +87,8 @@ namespace jsh {
                 return strdup(matches[index++].c_str());
         }
 
-        char** completion(const char* text, int start, int end) {
-                (void)end; // ununsed but must exist
+        char** completion(const char* text, const int start, const int end) {
+                (void)end; // unused but must exist
                 
                 // If cursor is at the beginning (completing first token) -> command names
                 if (start == 0) {
