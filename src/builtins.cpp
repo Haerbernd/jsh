@@ -48,7 +48,7 @@ namespace jsh {
 
         bool showCwd = false;
 
-        void echo(const std::vector<std::string>& args) {
+        void echo(std::vector<std::string> args) {
                 std::string msg{};
 
                 for (int i{1}; i < args.size(); i++) {
@@ -58,7 +58,7 @@ namespace jsh {
                 print(msg, true);
         }
 
-        void type(const std::string& command) {
+        void type(std::string command) {
                 if (std::find(BUILTINS.begin(), BUILTINS.end(), command) != BUILTINS.end()) {
                         print(command + " is a shell builtin", true);
                 } else {
@@ -137,7 +137,7 @@ namespace jsh {
         }
 
         void help() {
-                const inputMetaData meta{};
+                inputMetaData meta{};
                 exec(std::vector<std::string>{"man", "jsh"}, meta);
         }
 }
