@@ -19,11 +19,11 @@ namespace jsh {
 
         extern bool showCwd;
 
-        void echo(const std::vector<std::string> args);
-        void type(const std::string command);
-        void exec(const std::vector<std::string>& args, inputMetaData& meta);
+        void echo(std::vector<std::string> args);
+        void type(std::string command);
+        void exec(const std::vector<std::string>& args, const inputMetaData& meta);
         void pwd();
-        void cd(std::string newPath="~");
+        void cd(const std::string& newPath="~");
         void toggleCwd();
         void help();
 }

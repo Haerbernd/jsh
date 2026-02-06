@@ -22,12 +22,12 @@ namespace jsh {
 
         std::vector<std::string> tokenize(const std::string& input, inputMetaData* meta);
 
-        void print(std::string msg, const bool newline=true);
-        void printErr(std::string msg, const bool newline=true);
+        void print(std::string msg, bool newline=true);
+        void printErr(std::string msg, bool newline=true);
         std::vector<std::string> getPATHDirs();
         bool isExecutable(const std::filesystem::path &p);
         std::string expandTilde(std::string newPath);
-        void writeToFile(std::string text, std::string filepath);
+        void writeToFile(const std::string& text, std::string filepath);
         void apply_redirections(const inputMetaData& meta);
 }
 

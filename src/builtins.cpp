@@ -1,7 +1,28 @@
+/*
+ *  jsh - a bash-inspired linux shell
+ *  Copyright (C) 2026  Jan-Hendrik Schmidt
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 #include "builtins.h"
 #include "os.h"
+
 #include <algorithm>
 #include <filesystem>
+
 #ifdef _WIN32
 #include <process.h>
 #else
@@ -27,7 +48,7 @@ namespace jsh {
 
         bool showCwd = false;
 
-        void echo(const std::vector<std::string> args) {
+        void echo(std::vector<std::string> args) {
                 std::string msg{};
 
                 for (int i{1}; i < args.size(); i++) {
@@ -37,11 +58,11 @@ namespace jsh {
                 print(msg, true);
         }
 
-        void type(const std::string command) {
+        void type(std::string command) {
                 if (std::find(BUILTINS.begin(), BUILTINS.end(), command) != BUILTINS.end()) {
                         print(command + " is a shell builtin", true);
                 } else {
-                        std::vector<std::string> PATHDirs{getPATHDirs()};
+                        const std::vector<std::string> PATHDirs{getPATHDirs()};
                        
                         std::filesystem::path currentPath{};
                         std::string currentPathStr{};
@@ -60,8 +81,8 @@ namespace jsh {
                 }
         }
 
-        void exec(const std::vector<std::string>& args, inputMetaData& meta) {
-                pid_t pid = fork();
+        void exec(const std::vector<std::string>& args, const inputMetaData& meta) {
+                const pid_t pid = fork();
                 int status; // CAUTION: not initialized
 
                 if (pid == -1) {
@@ -101,7 +122,7 @@ namespace jsh {
                 print(std::filesystem::current_path().string(), true);
         }
 
-        void cd(std::string newPath) {
+        void cd(const std::string& newPath) {
                 std::filesystem::path path{expandTilde(newPath)}; 
 
                 try {

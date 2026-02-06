@@ -1,4 +1,24 @@
+/*
+ *  jsh - a bash-inspired linux shell
+ *  Copyright (C) 2026  Jan-Hendrik Schmidt
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 #include "os.h"
+
 #include <format>
 #include <fstream>
 #include <iostream>
@@ -18,7 +38,7 @@ namespace jsh {
          * @param input: The input string. Must be a std::string.
          * @param meta: A pointer to the inputMetaData struct to synchronize meta data about the current input.
          * @return: The tokenized input as a std::vector<std::string>.
-         * The input string will be splitted on whitespaces unless each one is escaped with a backslash or they are in a quote.
+         * The input string will be split on whitespaces unless each one is escaped with a backslash or they are in a quote.
          * A backslash can escape single and double quotes, whitespaces, backslashes. Every other character is treated as normal.
          * > is interpreted as 1> and both redirect STDOUT to a given file. 2> does the same with STDERR, and 0> to STDIN.
          */
@@ -33,7 +53,7 @@ namespace jsh {
                 bool isTwo{false};
 
                 for (size_t i{0}; i < input.length(); i++) {
-                        char currentChar = input[i];
+                        const char currentChar = input[i];
 
                         if (backslashEscape && i == lastBackslash + 2) {
                                 backslashEscape = false;
@@ -150,7 +170,7 @@ namespace jsh {
         std::vector<std::string> getPATHDirs() {
                 std::vector<std::string> PATHDirs{};
                 if (const char* PATHchar = std::getenv("PATH")) {
-                        std::string PATH{PATHchar};
+                        const std::string PATH{PATHchar};
                         std::stringstream strStream(PATH);
                         std::string tempString{};
                         while (std::getline(strStream, tempString, PATH_LIST_SEPARATOR)) {
@@ -166,12 +186,12 @@ namespace jsh {
          * @return: Returns true when any combination of the following are true: owner has execute permission, group has execute permission, others (all) have execute permission
          * */
         bool isExecutable(const std::filesystem::path &p) {
-                auto status{std::filesystem::status(p)};
+                const std::filesystem::file_status status{std::filesystem::status(p)};
                 if (!std::filesystem::exists(status) or !std::filesystem::is_regular_file(status)) {
                         return false;
                 }
 
-                std::filesystem::perms perms = status.permissions();
+                const std::filesystem::perms perms = status.permissions();
 
                 return (perms & std::filesystem::perms::owner_exec) != std::filesystem::perms::none or
                        (perms & std::filesystem::perms::group_exec) != std::filesystem::perms::none or
@@ -197,12 +217,16 @@ namespace jsh {
                 return path;
         }
 
+<<<<<<< HEAD
         /*
          * Writes a given string to a given file (creates the file if it does not exist). The string will be appended to the file, data already in the file will not be overwritten. It is not necessary to prepend a \n to enforce a newline for the text.
          * @param text: The text that should be written to file.
          * @param filepath: The file(path) to which the text shall be written.
          * */
         void writeToFile(std::string text, std::string filepath) {
+=======
+        void writeToFile(const std::string& text, std::string filepath) {
+>>>>>>> 178008cf85a5af03276b080a641d5a184dd6ab51
                 std::ofstream ofs(filepath);
                 if (!ofs) {
                         printErr(std::format("{} could not be opened or created for writing", filepath), true);
