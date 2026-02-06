@@ -217,16 +217,12 @@ namespace jsh {
                 return path;
         }
 
-<<<<<<< HEAD
         /*
          * Writes a given string to a given file (creates the file if it does not exist). The string will be appended to the file, data already in the file will not be overwritten. It is not necessary to prepend a \n to enforce a newline for the text.
          * @param text: The text that should be written to file.
          * @param filepath: The file(path) to which the text shall be written.
          * */
-        void writeToFile(std::string text, std::string filepath) {
-=======
         void writeToFile(const std::string& text, std::string filepath) {
->>>>>>> 178008cf85a5af03276b080a641d5a184dd6ab51
                 std::ofstream ofs(filepath);
                 if (!ofs) {
                         printErr(std::format("{} could not be opened or created for writing", filepath), true);
