@@ -143,7 +143,10 @@ namespace jsh {
                 std::cerr << msg;
         }
 
-        /**/
+        /*
+         * Returns the directories on PATH as a std::vector<std::string>.
+         * return: std::vector<std::string> directories on PATH. Each directory has is its own item in the std::vector.
+         * */
         std::vector<std::string> getPATHDirs() {
                 std::vector<std::string> PATHDirs{};
                 if (const char* PATHchar = std::getenv("PATH")) {
@@ -157,6 +160,11 @@ namespace jsh {
                 return PATHDirs;
         }
 
+        /*
+         * Will check whether a file/path is executable (by anyone).
+         * @param p: The path that will be checked for execute permissions.
+         * @return: Returns true when any combination of the following are true: owner has execute permission, group has execute permission, others (all) have execute permission
+         * */
         bool isExecutable(const std::filesystem::path &p) {
                 auto status{std::filesystem::status(p)};
                 if (!std::filesystem::exists(status) or !std::filesystem::is_regular_file(status)) {
@@ -170,19 +178,30 @@ namespace jsh {
                        (perms & std::filesystem::perms::others_exec) != std::filesystem::perms::none;
         }
 
-        std::string expandTilde(std::string newPath) {
-                if (newPath == "~" || newPath.rfind("~/", 0) == 0) {
+        /*
+         * Will expand a tilde at the beginning of a given path to the users home directory or do nothing if no tilde is found.
+         * @param path: The path that should be checked for tilde and expanded (if a tilde is found at the beginning of the path.
+         * @return: The new path with the users home instead of the tilde (at the beginning) or the given path if no tilde was found at the beginning of the string.
+         * */
+        std::string expandTilde(std::string path) {
+                if (path == "~" || path.rfind("~/", 0) == 0) {
                         std::string home{};
                         #ifdef _WIN32
                         home = std::getenv("HOMEDRIVE") + std::getenv("HOMEPATH"); // might just be USERPROFILE instead
                         #else
                         home = std::getenv("HOME");
                         #endif
-                        newPath = home + newPath.substr(1);
+                        std::string newPath {home + path.substr(1)};
+                        return newPath;
                 }
-                return newPath;
+                return path;
         }
 
+        /*
+         * Writes a given string to a given file (creates the file if it does not exist). The string will be appended to the file, data already in the file will not be overwritten. It is not necessary to prepend a \n to enforce a newline for the text.
+         * @param text: The text that should be written to file.
+         * @param filepath: The file(path) to which the text shall be written.
+         * */
         void writeToFile(std::string text, std::string filepath) {
                 std::ofstream ofs(filepath);
                 if (!ofs) {
@@ -192,6 +211,10 @@ namespace jsh {
                 ofs.close();
         }
 
+        /*
+         * Applies the wanted redirections to the process's file descriptors (e.g. append STDOUT to a file).
+         * @param meta: A reference to the inputMetaData struct/object that holds the information about the redirections that should be applied.
+         * */
         void apply_redirections(const inputMetaData& meta) {
                 if (!meta.redirect_stdout && !meta.redirect_stderr) {
                         return;
