@@ -1,9 +1,8 @@
 #include "os.h"
 
+#include <cassert>
 #include <string>
 #include <vector>
-
-#include <cassert>
 
 using jsh::inputMetaData;
 using jsh::tokenize;

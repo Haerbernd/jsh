@@ -1,13 +1,12 @@
 #include "os.h"
 
-#include <fstream>
-
 #include <cassert>
 #include <fcntl.h>
+#include <fstream>
 #include <unistd.h>
 
-using jsh::inputMetaData;
 using jsh::apply_redirections;
+using jsh::inputMetaData;
 
 int main() {
         inputMetaData meta{};

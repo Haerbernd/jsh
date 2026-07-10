@@ -18,89 +18,91 @@
  */
 
 #include "completion.h"
+
 #include "builtins.h"
 #include "os.h"
 
+#include <cstdlib>
+#include <cstring>
 #include <filesystem>
+#include <readline/history.h>
+#include <readline/readline.h>
 #include <string>
 #include <vector>
 
-#include <cstdlib>
-#include <cstring>
-
-#include <readline/history.h>
-#include <readline/readline.h>
-
 namespace jsh {
-        static std::vector<std::string> PATH_CMDS;
+static std::vector<std::string> PATH_CMDS;
 
-        static void init_path_commands() {
-                PATH_CMDS.clear();
-                std::vector<std::string> dirs = getPATHDirs();
+static void init_path_commands() {
+        PATH_CMDS.clear();
+        std::vector<std::string> dirs = getPATHDirs();
 
-                for (std::string& d : dirs) {
-                        if (!std::filesystem::exists(d)) {
+        for (std::string& d : dirs) {
+                if (!std::filesystem::exists(d)) {
+                        continue;
+                }
+
+                for (const std::filesystem::directory_entry& entry :
+                     std::filesystem::directory_iterator(d)) {
+                        if (!entry.is_regular_file()) {
                                 continue;
                         }
 
-                        for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(d)) {
-                                if (!entry.is_regular_file()) {
-                                        continue;
-                                }
+                        if (isExecutable(entry.path())) {
+                                PATH_CMDS.push_back(
+                                    entry.path().filename().string());
+                        }
+                }
+        }
+}
 
-                                if (isExecutable(entry.path())) {
-                                        PATH_CMDS.push_back(entry.path().filename().string());
-                                }
+static char* cmd_generator(const char* text, const int state) {
+        static size_t index{0};
+        static std::vector<std::string> matches;
+
+        if (state == 0) {
+                index = 0;
+                matches.clear();
+
+                std::string t(text);
+
+                // Builtins
+                for (const std::string& b : BUILTINS) {
+                        if (b.rfind(t, 0) == 0) {
+                                matches.push_back(b);
+                        }
+                }
+
+                // External commands
+                for (const std::string& cmd : PATH_CMDS) {
+                        if (cmd.rfind(t, 0) == 0) {
+                                matches.push_back(cmd);
                         }
                 }
         }
 
-        static char* cmd_generator(const char* text, const int state) {
-                static size_t index{0};
-                static std::vector<std::string> matches;
-
-                if (state == 0) {
-                        index = 0;
-                        matches.clear();
-
-                        std::string t(text);
-
-                        // Builtins
-                        for (const std::string& b : BUILTINS) {
-                                if (b.rfind(t, 0) == 0) {
-                                        matches.push_back(b);
-                                }
-                        }
-
-                        // External commands
-                        for (const std::string& cmd : PATH_CMDS) {
-                                if (cmd.rfind(t, 0) == 0) {
-                                        matches.push_back(cmd);
-                                }
-                        }
-                }
-
-                if (index >= matches.size()) {
-                        return nullptr;
-                }
-
-                return strdup(matches[index++].c_str());
-        }
-
-        char** completion(const char* text, const int start, const int end) {
-                (void)end; // unused but must exist
-                
-                // If cursor is at the beginning (completing first token) -> command names
-                if (start == 0) {
-                        return rl_completion_matches(text, cmd_generator);
-                }
-
-                // Otherwise -> default to file completion
+        if (index >= matches.size()) {
                 return nullptr;
         }
 
-        void init_completion() {
-                init_path_commands();
-                rl_attempted_completion_function = completion;
-        }
+        return strdup(matches[index++].c_str());
 }
+
+char** completion(const char* text, const int start, const int end) {
+        (void)end; // unused but must exist
+
+        // If cursor is at the beginning (completing first token) -> command
+        // names
+        if (start == 0) {
+                return rl_completion_matches(text, cmd_generator);
+        }
+
+        // Otherwise -> default to file completion
+        return nullptr;
+}
+
+void init_completion() {
+        init_path_commands();
+        rl_attempted_completion_function = completion;
+}
+} // namespace jsh

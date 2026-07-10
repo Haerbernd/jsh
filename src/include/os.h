@@ -7,28 +7,29 @@
 
 namespace jsh {
 
-        #ifdef _WIN32
-                constexpr char PATH_LIST_SEPARATOR{';'};
-        #else
-                constexpr char PATH_LIST_SEPARATOR{':'};
-        #endif
+#ifdef _WIN32
+constexpr char PATH_LIST_SEPARATOR{';'};
+#else
+constexpr char PATH_LIST_SEPARATOR{':'};
+#endif
 
-        struct inputMetaData{
-                bool redirect_stdout{false};
-                bool redirect_stderr{false};
-                bool redirect_stdin{false};   // not implemented for now
-                std::string redirect_file{""};
-        };
+struct inputMetaData {
+        bool redirect_stdout{false};
+        bool redirect_stderr{false};
+        bool redirect_stdin{false}; // not implemented for now
+        std::string redirect_file{""};
+};
 
-        std::vector<std::string> tokenize(const std::string& input, inputMetaData* meta);
+std::vector<std::string> tokenize(const std::string& input,
+                                  inputMetaData* meta);
 
-        void print(std::string msg, bool newline=true);
-        void printErr(std::string msg, bool newline=true);
-        std::vector<std::string> getPATHDirs();
-        bool isExecutable(const std::filesystem::path &p);
-        std::string expandTilde(std::string newPath);
-        void writeToFile(const std::string& text, std::string filepath);
-        void apply_redirections(const inputMetaData& meta);
-}
+void print(std::string msg, bool newline = true);
+void printErr(std::string msg, bool newline = true);
+std::vector<std::string> getPATHDirs();
+bool isExecutable(const std::filesystem::path& p);
+std::string expandTilde(std::string newPath);
+void writeToFile(const std::string& text, std::string filepath);
+void apply_redirections(const inputMetaData& meta);
+} // namespace jsh
 
 #endif

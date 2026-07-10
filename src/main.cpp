@@ -21,28 +21,26 @@
 #include "completion.h"
 #include "os.h"
 
+#include <cstdlib>
 #include <filesystem>
 #include <format>
 #include <fstream>
 #include <iostream>
-#include <string>
-
-#include <cstdlib>
-
 #include <readline/history.h>
 #include <readline/readline.h>
+#include <string>
 
 #ifdef _WIN32
-        #include <process.h>
+#include <process.h>
 #else
-        #include <unistd.h>
+#include <unistd.h>
 #endif
 
 int main() {
         bool running{true};
 
         bool interactive{static_cast<bool>(isatty(STDIN_FILENO))};
-        
+
         // Flush after every std::cout / std:cerr
         std::cout << std::unitbuf;
         std::cerr << std::unitbuf;
@@ -58,17 +56,21 @@ int main() {
                 std::ofstream ofs(histfile);
                 ofs.close();
         }
-        read_history(histfile.c_str()); 
+        read_history(histfile.c_str());
 
-        while (running) { 
+        while (running) {
                 std::string input;
 
                 if (interactive) {
                         const char* input_;
                         if (!jsh::showCwd) {
                                 input_ = readline("$ ");
-                        } else { 
-                                input_ = readline(std::format("[{}]$ ", std::filesystem::current_path().string()).c_str());
+                        } else {
+                                input_ = readline(
+                                    std::format("[{}]$ ",
+                                                std::filesystem::current_path()
+                                                    .string())
+                                        .c_str());
                         }
                         if (!input_) {
                                 break; // EOF (Ctrl + D)
@@ -95,34 +97,35 @@ int main() {
                 } else {
                         auto it = jsh::builtins.find(inputVec[0]);
                         if (it != jsh::builtins.end()) {
-                               int saved_stdout{-1};
-                               int saved_stderr{-1};
+                                int saved_stdout{-1};
+                                int saved_stderr{-1};
 
-                               if (meta.redirect_stdout) {
+                                if (meta.redirect_stdout) {
                                         saved_stdout = dup(STDOUT_FILENO);
-                               }
-                               if (meta.redirect_stderr) {
+                                }
+                                if (meta.redirect_stderr) {
                                         saved_stderr = dup(STDERR_FILENO);
-                               }
+                                }
 
-                               jsh::apply_redirections(meta);
-                               it->second(inputVec);
+                                jsh::apply_redirections(meta);
+                                it->second(inputVec);
 
-                               if (saved_stdout != -1) {
-                                       dup2(saved_stdout, STDOUT_FILENO);
-                                       close(saved_stdout);
-                               }
-                               if (saved_stderr != -1) {
-                                       dup2(saved_stderr, STDERR_FILENO);
-                                       close(saved_stderr);
-                               }
-                       } else {
+                                if (saved_stdout != -1) {
+                                        dup2(saved_stdout, STDOUT_FILENO);
+                                        close(saved_stdout);
+                                }
+                                if (saved_stderr != -1) {
+                                        dup2(saved_stderr, STDERR_FILENO);
+                                        close(saved_stderr);
+                                }
+                        } else {
                                 for (int i{}; i < inputVec.size(); i++) {
-                                        inputVec[i] = jsh::expandTilde(inputVec[i]);
+                                        inputVec[i] =
+                                            jsh::expandTilde(inputVec[i]);
                                 }
                                 jsh::exec(inputVec, meta);
-                       }
-                } 
+                        }
+                }
         }
 
         append_history(history_length, histfile.c_str());
