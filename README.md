@@ -1,4 +1,5 @@
 # JSH
+[![Code Style/Format](https://github.com/Haerbernd/jsh/actions/workflows/clang-format.yml/badge.svg)](https://github.com/Haerbernd/jsh/actions/workflows/clang-format.yml)
 [![Ubuntu (CMake)](https://github.com/Haerbernd/jsh/actions/workflows/ubuntu-cmake.yml/badge.svg)](https://github.com/Haerbernd/jsh/actions/workflows/ubuntu-cmake.yml)
 
 A bash-inspired shell created in part through CodeCrafters build-your-own-shell challenge.
