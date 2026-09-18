@@ -1,3 +1,6 @@
 [submodule "docs"]
 	path = docs
 	url = git@github.com:Haerbernd/jsh-docs.git
+[submodule "external/common-tools-library"]
+	path = external/common-tools-library
+	url = git@github.com:Haerbernd/common-tools-library.git

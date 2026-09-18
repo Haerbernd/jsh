@@ -5,7 +5,11 @@
 #include <vector>
 
 namespace jsh {
-typedef enum TokenType { STRING, AMPERCENT_SINGLE, AMPERCENT_DOUBLE } TokenType;
+typedef enum TokenType {
+        TOKEN_STRING,
+        TOKEN_AMPERSAND_SINGLE,
+        TOKEN_AMPERSAND_DOUBLE
+} TokenType;
 
 typedef struct Token {
         TokenType type;
@@ -13,7 +17,7 @@ typedef struct Token {
                 std::string string;
                 bool amp_single;
                 bool amp_double;
-        };
+        } data;
 } Token;
 
 std::vector<Token> tokenize(std::string& input);
