@@ -45,7 +45,7 @@ int main() {
         std::cout << std::unitbuf;
         std::cerr << std::unitbuf;
 
-        rl_bind_key('\t', rl_complete);
+        rl_bind_key('\t', rl_complete); // use TAB for completion
         using_history();
         stifle_history(5000); // keep max 5000 entries
 
@@ -66,11 +66,7 @@ int main() {
                         if (!jsh::showCwd) {
                                 input_ = readline("$ ");
                         } else {
-                                input_ = readline(
-                                    std::format("[{}]$ ",
-                                                std::filesystem::current_path()
-                                                    .string())
-                                        .c_str());
+                                input_ = readline(std::format("[{}]$ ", std::filesystem::current_path().string()).c_str());
                         }
                         if (!input_) {
                                 break; // EOF (Ctrl + D)

@@ -11,6 +11,6 @@ setup-cmake-without-test:
         cmake -S . -B build -DBUILD_TESTING=OFF
 
 package:
-        mkdir packaging
+        mkdir -p packaging
         cpack --config ./build/CPackConfig.cmake
         cpack --config ./build/CPackSourceConfig.cmake
