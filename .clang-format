@@ -5,6 +5,8 @@ TabWidth: 8
 UseTab: Never
 
 ColumnLimit: 0
+NamespaceIndentation: All
+FixNamespaceComments: false
 
 PointerAlignment: Left
 ReferenceAlignment: Left
